@@ -13,9 +13,6 @@ structure state
         outputChannels=[]
         channelData=[]
         savePath=''
-        baseName=''
-        sessionNumber=[]
-        saveName=''
-        isAcquiring=0
+        
     endstructure
 endstructure

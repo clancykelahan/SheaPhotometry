@@ -3,13 +3,11 @@ function processNidaqData(src,event)
     % dataAvailableExceeds == SampleRate * Duration
     global state
     
-    state.photometry.channelData = [state.photometry.channelData; event.Data]; % for non-continuous acquisition
-    size(state.photometry.channelData)
+    state.photometry.channelData = [state.photometry.channelData; event.Data]; % concatenates data vertically (semicolon as operator)
     
-    if size(state.photometry.channelData, 1) >=  30 * state.photometry.sample_rate
-        state.photometry.session.stop;
-        ensureFigure('test', 1); plot((0:size(state.photometry.channelData, 1) - 1)' / state.photometry.sample_rate, state.photometry.channelData);
-        disp('done');
-    end
+    channelData = state.photometry.channelData;
+    save(fullfile(state.photometry.savePath, state.photometry.saveName));
+    
+
     
     

@@ -33,7 +33,7 @@ function S = initPhotometry(S)
     state.photometry.session.NotifyWhenScansQueuedBelow = floor(state.photometry.sample_rate) * state.photometry.refreshPeriod; % fire event every second
     state.photometry.session.addlistener('DataAvailable',@processNidaqData);
     state.photometry.session.addlistener('DataRequired', @queueLEDData);    
-    state.photometry.session.startBackground;
+
 
     % now session is re-created each trial 5/30/17, lines below no longer
     % needed
