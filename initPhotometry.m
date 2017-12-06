@@ -1,5 +1,5 @@
-       
-function S = initPhotometry(S)
+function initPhotometry       
+% function S = initPhotometry(S)
     %% state.photometry :: Set up state.photometry data aquisision
     global state
 
@@ -11,12 +11,14 @@ function S = initPhotometry(S)
     if state.photometry.channel1On
         channelsOn = [channelsOn 1];
         state.photometry.inputChannels{1} = addAnalogInputChannel(state.photometry.session,state.photometry.device,1 - 1,'Voltage');        
+        state.photometry.inputChannels{1}.TerminalConfig = 'SingleEnded';        
         state.photometry.outputChannels{1} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,1 - 1, 'Voltage'); % - 1 because state.photometry channels are zero based        
     end
     
     if state.photometry.channel2On
         channelsOn = [channelsOn 2];
         state.photometry.inputChannels{2} = addAnalogInputChannel(state.photometry.session,state.photometry.device,2 - 1,'Voltage');        
+        state.photometry.inputChannels{2}.TerminalConfig = 'SingleEnded';
         state.photometry.outputChannels{2} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,2 - 1, 'Voltage'); % - 1 because state.photometry channels are zero based        
     end    
     state.photometry.channelsOn = channelsOn;

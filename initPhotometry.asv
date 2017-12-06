@@ -1,5 +1,5 @@
-       
-function S = initPhotometry(S)
+function initPhotometry       
+% function S = initPhotometry(S)
     %% state.photometry :: Set up state.photometry data aquisision
     global state
 
@@ -17,6 +17,7 @@ function S = initPhotometry(S)
     if state.photometry.channel2On
         channelsOn = [channelsOn 2];
         state.photometry.inputChannels{2} = addAnalogInputChannel(state.photometry.session,state.photometry.device,2 - 1,'Voltage');        
+        SingleEnded';
         state.photometry.outputChannels{2} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,2 - 1, 'Voltage'); % - 1 because state.photometry channels are zero based        
     end    
     state.photometry.channelsOn = channelsOn;
@@ -29,11 +30,11 @@ function S = initPhotometry(S)
     state.photometry.sample_rate = state.photometry.session.Rate;
     updateLEDData;
     
-    state.photometry.session.NotifyWhenDataAvailableExceeds = state.photometry.sample_rate * state.photometry.refreshPeriod; % fire event every second
-    state.photometry.session.NotifyWhenScansQueuedBelow = state.photometry.sample_rate * state.photometry.refreshPeriod; % fire event every second
+    state.photometry.session.NotifyWhenDataAvailableExceeds = floor(state.photometry.sample_rate) * state.photometry.refreshPeriod; % fire event every second
+    state.photometry.session.NotifyWhenScansQueuedBelow = floor(state.photometry.sample_rate) * state.photometry.refreshPeriod; % fire event every second
     state.photometry.session.addlistener('DataAvailable',@processNidaqData);
     state.photometry.session.addlistener('DataRequired', @queueLEDData);    
-    state.photometry.session.startBackground;
+
 
     % now session is re-created each trial 5/30/17, lines below no longer
     % needed

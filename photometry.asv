@@ -12,7 +12,10 @@ structure state
         inputChannels=[]
         outputChannels=[]
         channelData=[]
-        savePath=''
-        
+        savePath='' 
+        baseName=''
+        sessionNumber=1
+        saveName=''
+        isAcquiring=0
     endstructure
 endstructure
