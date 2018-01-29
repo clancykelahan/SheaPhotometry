@@ -22,7 +22,7 @@ function varargout = PhotometryMainGUI(varargin)
 
 % Edit the above text to modify the response to help PhotometryMainGUI
 
-% Last Modified by GUIDE v2.5 06-Dec-2017 15:33:21
+% Last Modified by GUIDE v2.5 21-Dec-2017 11:23:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -101,6 +101,7 @@ function savePath_Callback(hObject, eventdata, handles)
     genericCallback;
 
 
+
 % --- Executes during object creation, after setting all properties.
 function savePath_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to savePath (see GCBO)
@@ -112,3 +113,57 @@ function savePath_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA) 
+startPhotometry; 
+
+
+% --- Executes on slider movement.
+function slider1_Callback(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+global state 
+    get(state.photometry.channel1Amp, 0.05)  
+    get(state.photometry.channel1Amp, 2.0) 
+    updateGUIByGlobal('state.photometry.channel1Amp');
+    genericCallback;
+
+% --- Executes during object creation, after setting all properties.
+function slider1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+stopPhotometry;
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+openini('photometry.ini');
+initPhotometry;

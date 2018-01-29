@@ -7,27 +7,29 @@ function updateLEDData
     % kludge alert! for alternating excitaoitn
     kludgeOn = 1;
     t = (0:nSamples - 1)' / state.photometry.sample_rate;
-    modFunction = sin(2*pi*211*t);
+    modFunction = sin(2*pi*.1*t);
     mod1 = modFunction > 0;
     mod2 = modFunction < 0;    
     for channel = state.photometry.channelsOn
         if kludgeOn
             if channel == 1
                 outputData(:,channel) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod1;
-            elseif channel == 2
+            end
+%         else
+            if channel == 2
                 outputData(:,channel) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod2;
             end
-        else            
-            outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
-        end
+%         else            
+%             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
+%         end
 %         if channel == 1
 %             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']) .* mod1;
 %         elseif channel == 2
 %             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']) .* mod2;
-%         end        
+         end        
     end
     
-    state.photometry.session.queueOutputData(outputData);
+    state.photometry.session.queueOutputData([outputData(:,1) outputData(:,2)]);
     
     
 
