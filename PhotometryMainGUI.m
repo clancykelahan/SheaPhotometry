@@ -22,7 +22,7 @@ function varargout = PhotometryMainGUI(varargin)
 
 % Edit the above text to modify the response to help PhotometryMainGUI
 
-% Last Modified by GUIDE v2.5 21-Dec-2017 11:23:01
+% Last Modified by GUIDE v2.5 15-Feb-2018 11:17:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -98,7 +98,7 @@ function savePath_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of savePath as text
 %        str2double(get(hObject,'String')) returns contents of savePath as a double
-    genericCallback;
+    genericCallback(hObject);
 
 
 
@@ -124,22 +124,18 @@ startPhotometry;
 
 
 % --- Executes on slider movement.
-function slider1_Callback(hObject, eventdata, handles)
-% hObject    handle to slider1 (see GCBO)
+function Ch1AmpSlider_Callback(hObject, eventdata, handles)
+% hObject    handle to Ch1AmpSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-global state 
-    get(state.photometry.channel1Amp, 0.05)  
-    get(state.photometry.channel1Amp, 2.0) 
-    updateGUIByGlobal('state.photometry.channel1Amp');
-    genericCallback;
+    genericCallback(hObject);
 
 % --- Executes during object creation, after setting all properties.
-function slider1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to slider1 (see GCBO)
+function Ch1AmpSlider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Ch1AmpSlider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -162,8 +158,26 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+launch;
 
 
+% --- Executes on slider movement.
+function Ch2AmpSlider_Callback(hObject, eventdata, handles)
+% hObject    handle to Ch2AmpSlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
-openini('photometry.ini');
-initPhotometry;
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+    genericCallback(hObject);
+
+% --- Executes during object creation, after setting all properties.
+function Ch2AmpSlider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Ch2AmpSlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end

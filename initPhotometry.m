@@ -1,11 +1,12 @@
 function initPhotometry       
 % function S = initPhotometry(S)
     %% state.photometry :: Set up state.photometry data aquisision
-    global state
+    global state 
 
     daq.reset; % I'm testing re-initializing state.photometry with every acquisition- see preparePhotometryAcq
     state.photometry.channelData = [];
     state.photometry.session = daq.createSession('ni');
+    state.DIO.session = daq.createSession('ni');
     % which channels are on?
     channelsOn = [];    
     if state.photometry.channel1On
@@ -23,7 +24,7 @@ function initPhotometry
     end    
     state.photometry.channelsOn = channelsOn;
     
-
+    addDigitalChannel(state.DIO.session,'Dev1','port1/line0','OutputOnly');
 
     
     state.photometry.session.IsContinuous = true;

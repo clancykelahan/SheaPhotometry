@@ -5,9 +5,9 @@ function updateLEDData
     nSamples = ceil(state.photometry.refreshPeriod * state.photometry.sample_rate);
     outputData = zeros(nSamples, length(state.photometry.channelsOn)); % preallocated output data
     % kludge alert! for alternating excitaoitn
-    kludgeOn = 1;
+    kludgeOn = 0;
     t = (0:nSamples - 1)' / state.photometry.sample_rate;
-    modFunction = sin(2*pi*.1*t);
+    modFunction = sin(2*pi*211*t);
     mod1 = modFunction > 0;
     mod2 = modFunction < 0;    
     for channel = state.photometry.channelsOn
@@ -15,21 +15,26 @@ function updateLEDData
             if channel == 1
                 outputData(:,channel) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod1;
             end
-%         else
+
             if channel == 2
                 outputData(:,channel) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod2;
             end
+        else
 %         else            
 %             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
 %         end
-%         if channel == 1
-%             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']) .* mod1;
-%         elseif channel == 2
-%             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']) .* mod2;
-         end        
+            if channel == 1
+                outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
+            end
+
+            if channel == 2
+                outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
+            end   
+        end
     end
     
     state.photometry.session.queueOutputData([outputData(:,1) outputData(:,2)]);
+    state.photometry.outputData = outputData;
     
     
 
