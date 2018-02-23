@@ -22,7 +22,7 @@ function varargout = PhotometryMainGUI(varargin)
 
 % Edit the above text to modify the response to help PhotometryMainGUI
 
-% Last Modified by GUIDE v2.5 15-Feb-2018 11:17:03
+% Last Modified by GUIDE v2.5 21-Feb-2018 17:03:43
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,6 +55,10 @@ function PhotometryMainGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for PhotometryMainGUI
 handles.output = hObject;
 
+% create the listener for the slider
+%  handles.sliderListener = addlistener(handles.Ch1AmpSlider,'ContinuousValueChange',@(hFigure,eventdata) Ch1AmpSliderContValCallback(hObject,eventdata));
+%  handles.sliderListener = addlistener(handles.Ch2AmpSlider,'ContinuousValueChange',@(hFigure,eventdata) Ch2AmpSliderContValCallback(hObject,eventdata));
+ 
 % Update handles structure
 guidata(hObject, handles);
 
@@ -132,7 +136,8 @@ function Ch1AmpSlider_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
     genericCallback(hObject);
-
+    updateGUIByGlobal('state.photometry.channel1Amp');
+    
 % --- Executes during object creation, after setting all properties.
 function Ch1AmpSlider_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to Ch1AmpSlider (see GCBO)
@@ -158,7 +163,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-launch;
+initPhotometry;
 
 
 % --- Executes on slider movement.
@@ -170,6 +175,7 @@ function Ch2AmpSlider_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
     genericCallback(hObject);
+    updateGUIByGlobal('state.photometry.channel2Amp');
 
 % --- Executes during object creation, after setting all properties.
 function Ch2AmpSlider_CreateFcn(hObject, eventdata, handles)
@@ -181,3 +187,156 @@ function Ch2AmpSlider_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+
+
+
+
+
+
+
+%function Ch1AmpText_Callback(hObject, eventdata, handles)
+% hObject    handle to Ch1AmpText (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Ch1AmpText as text
+%        str2double(get(hObject,'String')) returns contents of Ch1AmpText as a double
+
+
+
+function baseName_Callback(hObject, eventdata, handles)
+% hObject    handle to baseName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of baseName as text
+%        str2double(get(hObject,'String')) returns contents of baseName as a double
+    genericCallback(hObject);
+    setSaveName;
+
+% --- Executes during object creation, after setting all properties.
+function baseName_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to baseName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function saveName_Callback(hObject, eventdata, handles)
+% hObject    handle to saveName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of saveName as text
+%        str2double(get(hObject,'String')) returns contents of saveName as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function saveName_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to saveName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function sessionNumber_Callback(hObject, eventdata, handles)
+% hObject    handle to sessionNumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of sessionNumber as text
+%        str2double(get(hObject,'String')) returns contents of sessionNumber as a double
+    genericCallback(hObject);
+
+
+% --- Executes during object creation, after setting all properties.
+function sessionNumber_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sessionNumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function channel1Amp_Callback(hObject, eventdata, handles)
+% hObject    handle to channel1Amp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of channel1Amp as text
+%        str2double(get(hObject,'String')) returns contents of channel1Amp as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function channel1Amp_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to channel1Amp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function channel2Amp_Callback(hObject, eventdata, handles)
+% hObject    handle to channel2Amp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of channel2Amp as text
+%        str2double(get(hObject,'String')) returns contents of channel2Amp as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function channel2Amp_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to channel2Amp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in channel1On.
+function channel1On_Callback(hObject, eventdata, handles)
+% hObject    handle to channel1On (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of channel1On
+    genericCallback(hObject);
+
+
+% --- Executes on button press in channel2On.
+function channel2On_Callback(hObject, eventdata, handles)
+% hObject    handle to channel2On (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of channel2On
+    genericCallback(hObject);

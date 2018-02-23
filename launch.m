@@ -1,15 +1,15 @@
 %% start the thing from fresh
 clear all;
-%close all;
+close all;
 
 global state
 
-% openini('photometry.ini');
+ openini('photometry.ini');
 initPhotometry;
 
 
 state.photometry.savePath = 'C:\Users\Steve\Documents\dummydata';
-state.photometry.baseName = 'fitzAni';
+state.photometry.baseName = 'test022118';
 setSaveName;
 
 

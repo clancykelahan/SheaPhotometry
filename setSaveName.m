@@ -10,3 +10,16 @@ function setSaveName
     state.photometry.saveName = [state.photometry.baseName '_' todayS '_' sprintf('%02u', state.photometry.sessionNumber) '.mat'];
     updateGUIByGlobal('state.photometry.saveName');
     warning('** Make sure you are not overwriting old data, is session number unique?**');
+    
+    
+    % get directory contents of save path
+    % check to see if file name already exists
+    % if it still exists, increment acq number and try again
+    
+%     while 1
+        
+        
+%         if exists(fullfile(state.photometry.savePath, state.photometry.saveName));
+%             
+        
+        
