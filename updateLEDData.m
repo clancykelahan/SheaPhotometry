@@ -10,31 +10,34 @@ function updateLEDData
     modFunction = sin(2*pi*211*t);
     mod1 = modFunction > 0;
     mod2 = modFunction < 0;    
-    for channel = state.photometry.channelsOn
+    for channelIndex = 1:length(state.photometry.channelsOn)
+        channel = state.photometry.channelsOn(channelIndex);
         if kludgeOn
             if channel == 1
-                outputData(:,channel) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod1;
+                outputData(:,channelIndex) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod1;
             end
 
             if channel == 2
-                outputData(:,channel) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod2;
+                outputData(:,channelIndex) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod2;
             end
         else
 %         else            
 %             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
 %         end
             if channel == 1
-                outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
+                outputData(:,channelIndex) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
             end
 
             if channel == 2
-                outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
+                outputData(:,channelIndex) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
             end   
         end
     end
-    
-    state.photometry.session.queueOutputData([outputData(:,1) outputData(:,2)]);
-    state.photometry.outputData = outputData;
+%     
+%     state.photometry.session.queueOutputData([outputData(:,1) outputData(:,2)]);
+
+state.photometry.session.queueOutputData(outputData);
+state.photometry.outputData = outputData;
     
     
 

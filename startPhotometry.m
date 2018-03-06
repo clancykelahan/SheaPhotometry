@@ -1,9 +1,11 @@
 function startPhotometry
     global state
+    global vid
     if isempty(state.photometry.saveName)
         return
     end
     warning('you need to add functoinality to add settings to saved data, see how bpod does this');
+start(vid)
 state.photometry.session.startBackground; % start the recording
 pause(2)
     outputSingleScan(state.DIO.session,[1])
