@@ -1,18 +1,22 @@
 function [peaksignal]=PeakNorm(filename)
 load (filename, 'channelData')
 
-[channel1peaks]=findpeaks(channelData(:,1),'MinPeakDistance',16);
-[channel2peaks]=findpeaks(channelData(:,2),'MinPeakDistance',16);
-%[b,a] = butter(2,[10/(211/2)]);
-%         filtdata1=filtfilt(b,a,channel1peaks);
-%         filtdata2=filtfilt(b,a,channel2peaks);
-% zchannel1peaks= zscore(channel1peaks)+5;
-% zchannel2peaks= zscore(channel2peaks)+5;
+[channel1peaks]=findpeaks(channelData(12200:end,1),'MinPeakDistance',16);
+[channel2peaks]=findpeaks(channelData(12200:end,2),'MinPeakDistance',16);
+q=min([length(channel1peaks) length(channel2peaks)]);
+channel1peaks=(channel1peaks(1:q));
+channel2peaks=(channel2peaks(1:q));
+smoothpeaks1= smooth(channel1peaks,(100/length(channel1peaks)),'lowess');
+smoothpeaks2= smooth(channel2peaks,(100/length(channel1peaks)),'lowess');
+smoothpeaks1corr=BleachingFit(smoothpeaks1);
+smoothpeaks2corr=BleachingFit(smoothpeaks2);
+zchannel1peaks= zscore(smoothpeaks1corr);
+zchannel2peaks= zscore(smoothpeaks2corr);
  xdata = (0:size(channel1peaks) - 1) / 211;
-  plot(xdata, channel1peaks, 'g'); hold on;
-  plot(xdata, channel2peaks, 'r');
- normdata=channel1peaks./channel2peaks;
-%  normdata=filtfilt(b,a,normdata);
+  figure;plot(xdata, zchannel1peaks, 'g'); hold on;
+  plot(xdata, zchannel2peaks, 'r');
+ normdata=zchannel1peaks-zchannel2peaks;
+
  figure; plot(xdata, normdata)
 
 % save filename channelData peaksignal

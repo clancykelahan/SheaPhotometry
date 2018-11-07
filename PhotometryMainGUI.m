@@ -22,7 +22,7 @@ function varargout = PhotometryMainGUI(varargin)
 
 % Edit the above text to modify the response to help PhotometryMainGUI
 
-% Last Modified by GUIDE v2.5 21-Feb-2018 17:03:43
+% Last Modified by GUIDE v2.5 07-Aug-2018 15:10:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -263,6 +263,8 @@ function sessionNumber_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of sessionNumber as text
 %        str2double(get(hObject,'String')) returns contents of sessionNumber as a double
     genericCallback(hObject);
+    setSaveName;
+    
 
 
 % --- Executes during object creation, after setting all properties.
@@ -342,3 +344,22 @@ function channel2On_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of channel2On
     genericCallback(hObject);
+
+
+% --- Executes on button press in togglebutton1.
+function togglebutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to togglebutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of togglebutton1
+
+val=get(hObject,'Value');
+
+if val==1
+    pre_vid = videoinput('winvideo', 1);
+    preview(pre_vid);
+else
+    closepreview;
+    clear pre_vid;
+end

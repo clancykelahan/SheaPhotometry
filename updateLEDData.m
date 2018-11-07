@@ -3,42 +3,46 @@ function updateLEDData
     global state
     
     nSamples = ceil(state.photometry.refreshPeriod * state.photometry.sample_rate);
-    outputData = zeros(nSamples, length(state.photometry.channelsOn)); % preallocated output data
+    outputData = zeros(nSamples, (sum(state.photometry.channelsOn<=2))); % only channel1 and 2 are photometry channels containing in AND output channels preallocated output data
     % kludge alert! for alternating excitaoitn
-    kludgeOn = 0;
+    %kludgeOn = 0;
     t = (0:nSamples - 1)' / state.photometry.sample_rate;
-    modFunction = sin(2*pi*211*t);
-    mod1 = modFunction > 0;
-    mod2 = modFunction < 0;    
+%     modFunction = sin(2*pi*211*t);
+    mod1 = sin(2*pi*211*t);
+    mod2 = -mod1;    
     for channelIndex = 1:length(state.photometry.channelsOn)
         channel = state.photometry.channelsOn(channelIndex);
-        if kludgeOn
+        %if kludgeOn
             if channel == 1
-                outputData(:,channelIndex) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod1;
+                outputData(:,channelIndex) =  ((state.photometry.(['channel' num2str(channel) 'Amp'])./2) .* mod1)+(state.photometry.(['channel' num2str(channel) 'Amp'])./2);
             end
 
             if channel == 2
-                outputData(:,channelIndex) =  state.photometry.(['channel' num2str(channel) 'Amp']) .* mod2;
+                outputData(:,channelIndex) =  ((state.photometry.(['channel' num2str(channel) 'Amp'])./2) .* mod2)+(state.photometry.(['channel' num2str(channel) 'Amp'])./2);
             end
-        else
+        %else
 %         else            
 %             outputData(:,channel) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
 %         end
-            if channel == 1
-                outputData(:,channelIndex) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
-            end
-
-            if channel == 2
-                outputData(:,channelIndex) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
-            end   
-        end
+%             if channel == 1
+%                 outputData(:,channelIndex) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
+%             end
+% 
+%             if channel == 2
+%                 outputData(:,channelIndex) = ones(nSamples, 1) * state.photometry.(['channel' num2str(channel) 'Amp']);
+%             end   
+%         end
     end
 %     
 %     state.photometry.session.queueOutputData([outputData(:,1) outputData(:,2)]);
 
 state.photometry.session.queueOutputData(outputData);
 state.photometry.outputData = outputData;
-    
+%     nSamples = ceil(state.photometry2.refreshPeriod * state.photometry.sample_rate);
+%     outputData = zeros(nSamples, length(state.photometry2.channelsOn2));
+%     state.photometry2.session2.queueOutputData(outputData);
+%     state.photometry2.outputData = outputData;
+%     
     
 
 %     % generate output data

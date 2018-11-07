@@ -1,6 +1,6 @@
 %% start the thing from fresh
-clear all;
-close all;
+clc
+
 
 global state
 

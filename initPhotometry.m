@@ -1,30 +1,75 @@
 function initPhotometry       
 % function S = initPhotometry(S)
-    %% state.photometry :: Set up state.photometry data aquisision
-    global state 
 
-    daq.reset; % I'm testing re-initializing state.photometry with every acquisition- see preparePhotometryAcq
-    state.photometry.channelData = [];
+    % state.photometry :: Set up state.photometry data aquisision
+    global state
+    daq.reset;
+    state.photometry.micData = [];
     state.photometry.session = daq.createSession('ni');
     state.DIO.session = daq.createSession('ni');
-    % which channels are on?
-    channelsOn = [];    
-    if state.photometry.channel1On
+    channelsOn = [];
+     if state.photometry.channel1On
         channelsOn = [channelsOn 1];
         state.photometry.inputChannels{1} = addAnalogInputChannel(state.photometry.session,state.photometry.device,1 - 1,'Voltage');        
-        state.photometry.inputChannels{1}.TerminalConfig = 'SingleEnded';        
-        state.photometry.outputChannels{1} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,1 - 1, 'Voltage'); % - 1 because state.photometry channels are zero based        
+        state.photometry.inputChannels{1}.TerminalConfig = 'SingleEnded'; 
+        state.photometry.outputChannels{1} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,1 - 1, 'Voltage');
+       
+     end  
+     if state.photometry.channel2On
+        channelsOn = [channelsOn 2];
+%         state.photometry.inputChannels{2} = addAnalogInputChannel(state.photometry.session,state.photometry.device,2 - 1,'Voltage');        
+%         state.photometry.inputChannels{2}.TerminalConfig = 'SingleEnded';         
+        state.photometry.outputChannels{2} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,2 - 1, 'Voltage');
+       
+     end
+ 
+     state.photometry.channelsOn = channelsOn;
+%           addClockConnection(state.photometry2.session2,'Dev1/PFI5','external','ScanClock');
+     addTriggerConnection(state.photometry.session, 'Dev1/PFI4', 'External', 'StartTrigger'); 
+          addDigitalChannel(state.DIO.session,'Dev1','port1/line1','OutputOnly');
+    
+
+%         addTriggerConnection(state.photometry2.session2, 'Dev1/PFI4', 'Dev2/PFI0', 'StartTrigger');
+%     global state 
+%     daq.reset; % I'm testing re-initializing state.photometry with every acquisition- see preparePhotometryAcq
+    state.photometry2.channelData = [];
+    state.photometry2.session2 = daq.createSession('ni');
+    state.DIO2.session2 = daq.createSession('ni');
+    % which channels are on?
+    channelsOn2 = [];    
+    if state.photometry2.channel1On
+        channelsOn2 = [channelsOn2 1];
+        state.photometry2.inputChannels{1} = addAnalogInputChannel(state.photometry2.session2,state.photometry2.device2,1 - 1,'Voltage');        
+        state.photometry2.inputChannels{1}.TerminalConfig = 'SingleEnded';        
+%         state.photometry.outputChannels{1} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,1 - 1, 'Voltage'); % - 1 because state.photometry channels are zero based        
     end
     
-    if state.photometry.channel2On
-        channelsOn = [channelsOn 2];
-        state.photometry.inputChannels{2} = addAnalogInputChannel(state.photometry.session,state.photometry.device,2 - 1,'Voltage');        
-        state.photometry.inputChannels{2}.TerminalConfig = 'SingleEnded';
-        state.photometry.outputChannels{2} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,2 - 1, 'Voltage'); % - 1 because state.photometry channels are zero based        
-    end    
-    state.photometry.channelsOn = channelsOn;
-    
-    addDigitalChannel(state.DIO.session,'Dev1','port1/line0','OutputOnly');
+    if state.photometry2.channel2On
+        channelsOn2 = [channelsOn2 2];
+        state.photometry2.inputChannels{2} = addAnalogInputChannel(state.photometry2.session2,state.photometry2.device2,2 - 1,'Voltage');        
+        state.photometry2.inputChannels{2}.TerminalConfig = 'SingleEnded';
+%         state.photometry.outputChannels{2} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,2 - 1, 'Voltage'); % - 1 because state.photometry channels are zero based        
+    end
+  if state.photometry2.channel3On
+        channelsOn2 = [channelsOn2 3];
+        state.photometry2.inputChannels{3} = addAnalogInputChannel(state.photometry2.session2,state.photometry2.device2,3 - 1,'Voltage');        
+        state.photometry2.inputChannels{3}.TerminalConfig = 'SingleEnded'; 
+%         state.photometry.outputChannels{3} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,3 - 1, 'Voltage');
+       
+     end
+    state.photometry2.channelsOn2 = channelsOn2;
+
+%     addClockConnection(state.photometry.session,'external','Dev2/PFI1','ScanClock');
+     addTriggerConnection(state.photometry2.session2, 'External', 'Dev2/PFI0', 'StartTrigger');
+   
+%      
+
+%    if state.photometry.channel3On
+%         channelsOn = [channelsOn 3];
+%        state.photometry.inputChannels{3} = addAnalogInputChannel(state.photometry.session,state.photometry.device,3 - 1,'Voltage');        
+%         state.photometry.inputChannels{3}.TerminalConfig = 'SingleEnded';               
+%     end
+%     addDigitalChannel(state.DIO.session,'Dev1','port1/line0','OutputOnly');
 
     
     state.photometry.session.IsContinuous = true;
@@ -36,7 +81,19 @@ function initPhotometry
     state.photometry.session.NotifyWhenScansQueuedBelow = floor(state.photometry.sample_rate) * state.photometry.refreshPeriod; % fire event every second
     state.photometry.session.addlistener('DataAvailable',@processNidaqData);
     state.photometry.session.addlistener('DataRequired', @queueLEDData);    
+%     
+        state.photometry2.session2.IsContinuous = true;
+        state.photometry2.session2.Rate = state.photometry2.sample_rate;
+        state.photometry2.sample_rate = state.photometry2.session2.Rate;
+%         updateLEDData;
 
+        state.photometry2.session2.NotifyWhenDataAvailableExceeds = floor(state.photometry2.sample_rate) * state.photometry2.refreshPeriod; % fire event every second
+%         state.photometry2.session2.NotifyWhenScansQueuedBelow = floor(state.photometry2.sample_rate) * state.photometry2.refreshPeriod; % fire event every second
+        state.photometry2.session2.addlistener('DataAvailable',@processNidaqData2);
+        
+        
+        disp('Initialized');
+%         state.photometry2.session2.addlistener('DataRequired', @queueLEDData);
 
     % now session is re-created each trial 5/30/17, lines below no longer
     % needed
