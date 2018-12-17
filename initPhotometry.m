@@ -4,14 +4,18 @@ function initPhotometry
     % state.photometry :: Set up state.photometry data aquisision
     global state
     daq.reset;
-    state.photometry.micData = [];
+    state.mic.micData = [];
+    state.mic.session = daq.createSession('ni');
+        state.mic.inputChannels{1} = addAnalogInputChannel(state.mic.session,state.mic.device,1 - 1,'Voltage');        
+        state.mic.inputChannels{1}.TerminalConfig = 'SingleEnded'; 
+    
     state.photometry.session = daq.createSession('ni');
     state.DIO.session = daq.createSession('ni');
     channelsOn = [];
      if state.photometry.channel1On
         channelsOn = [channelsOn 1];
-        state.photometry.inputChannels{1} = addAnalogInputChannel(state.photometry.session,state.photometry.device,1 - 1,'Voltage');        
-        state.photometry.inputChannels{1}.TerminalConfig = 'SingleEnded'; 
+%         state.photometry.inputChannels{1} = addAnalogInputChannel(state.photometry.session,state.photometry.device,1 - 1,'Voltage');        
+%         state.photometry.inputChannels{1}.TerminalConfig = 'SingleEnded'; 
         state.photometry.outputChannels{1} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,1 - 1, 'Voltage');
        
      end  
@@ -77,10 +81,16 @@ function initPhotometry
     state.photometry.sample_rate = state.photometry.session.Rate;
     updateLEDData;
     
-    state.photometry.session.NotifyWhenDataAvailableExceeds = floor(state.photometry.sample_rate) * state.photometry.refreshPeriod; % fire event every second
     state.photometry.session.NotifyWhenScansQueuedBelow = floor(state.photometry.sample_rate) * state.photometry.refreshPeriod; % fire event every second
-    state.photometry.session.addlistener('DataAvailable',@processNidaqData);
-    state.photometry.session.addlistener('DataRequired', @queueLEDData);    
+    state.photometry.session.addlistener('DataRequired', @queueLEDData);
+    
+    state.mic.session.IsContinuous = true;
+    state.mic.session.Rate = state.mic.sample_rate;
+    state.mic.sample_rate = state.mic.session.Rate;
+    
+    state.mic.session.NotifyWhenDataAvailableExceeds = floor(state.mic.sample_rate) * state.mic.refreshPeriod; % fire event every second
+    state.mic.session.addlistener('DataAvailable',@processNidaqData);
+        
 %     
         state.photometry2.session2.IsContinuous = true;
         state.photometry2.session2.Rate = state.photometry2.sample_rate;
@@ -90,8 +100,21 @@ function initPhotometry
         state.photometry2.session2.NotifyWhenDataAvailableExceeds = floor(state.photometry2.sample_rate) * state.photometry2.refreshPeriod; % fire event every second
 %         state.photometry2.session2.NotifyWhenScansQueuedBelow = floor(state.photometry2.sample_rate) * state.photometry2.refreshPeriod; % fire event every second
         state.photometry2.session2.addlistener('DataAvailable',@processNidaqData2);
-        
-        
+        global k
+        k=0;
+        global olf_port
+        olf_port=serial('com4','baudrate', 9600, 'parity', 'none', 'databits', 8);
+        fopen (olf_port);
+        numOdor=state.olf.numOdor;
+        odorCasette=[1:numOdor]'
+        state.olf.odorSeq=[];
+        %determines how many trial presentations
+        reps=state.olf.presentations-1;
+        odorSeq=odorCasette(randperm(length(odorCasette)));
+        for c=1:reps
+            odorSeq=[odorSeq;odorCasette(randperm(length(odorCasette)))];
+        end
+        state.olf.odorSeq=odorSeq;
         disp('Initialized');
 %         state.photometry2.session2.addlistener('DataRequired', @queueLEDData);
 

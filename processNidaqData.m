@@ -8,12 +8,12 @@ function processNidaqData(src,event)
 disp('first finished');
     disp('executed save callback');
       
-    state.photometry.micData = [state.photometry.micData; event.Data]; % concatenates data vertically (semicolon as operator)
+    state.mic.micData = [state.mic.micData; event.Data]; % concatenates data vertically (semicolon as operator)
 %     state.photometry.TTL = [state.photometry.TTL; TTL];
     %outputSingleScan(s,[0])
 %     TTLData = state.photometry.TTL;
-    micData = state.photometry.micData; % copy structure field so that you can save only the data (limitation of save with structures)
-    save(fullfile(state.photometry.savePath, [state.photometry.saveName(1:end-4) '_Mic.mat']), 'micData');
+%     micData = state.mic.micData; % copy structure field so that you can save only the data (limitation of save with structures)
+%     save(fullfile(state.photometry.savePath, [state.photometry.saveName(1:end-4) '_Mic.mat']), 'micData');
 %     save(fullfile(state.photometry.savePath, [state.photometry.saveName(1:end-4) '_TTL.mat']), 'TTLData');
 %     
 %      pause(2)
