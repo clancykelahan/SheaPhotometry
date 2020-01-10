@@ -1,5 +1,7 @@
-function [deltaF] = deltaF(datafile)
-load(datafile, 'channelData');
+% function [deltaF] = deltaF(datafile)
+% load(datafile, 'channelData');
+
+channelData=state.photometry2.channelData;
 channelData=channelData(6101:end,:);
 sample_rate = 211;
 figure;plot(channelData(:,1),'g');hold;

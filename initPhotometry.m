@@ -29,8 +29,8 @@ function initPhotometry
  
      state.photometry.channelsOn = channelsOn;
 %           addClockConnection(state.photometry2.session2,'Dev1/PFI5','external','ScanClock');
-     addTriggerConnection(state.photometry.session, 'Dev1/PFI4', 'External', 'StartTrigger'); 
-          addDigitalChannel(state.DIO.session,'Dev1','port1/line1','OutputOnly');
+     addTriggerConnection(state.photometry.session, 'Dev3/PFI4', 'External', 'StartTrigger'); 
+          addDigitalChannel(state.DIO.session,'Dev3','port1/line1','OutputOnly');
     
 
 %         addTriggerConnection(state.photometry2.session2, 'Dev1/PFI4', 'Dev2/PFI0', 'StartTrigger');
@@ -60,11 +60,18 @@ function initPhotometry
         state.photometry2.inputChannels{3}.TerminalConfig = 'SingleEnded'; 
 %         state.photometry.outputChannels{3} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,3 - 1, 'Voltage');
        
-     end
+  end
+%     if state.photometry2.channel4On
+%         channelsOn2 = [channelsOn2 4];
+%         state.photometry2.inputChannels{4} = addAnalogInputChannel(state.photometry2.session2,state.photometry2.device2,4 - 1,'Voltage');        
+%         state.photometry2.inputChannels{4}.TerminalConfig = 'SingleEnded'; 
+% %         state.photometry.outputChannels{3} = addAnalogOutputChannel(state.photometry.session, state.photometry.device,3 - 1, 'Voltage');
+%        
+%      end 
     state.photometry2.channelsOn2 = channelsOn2;
 
 %     addClockConnection(state.photometry.session,'external','Dev2/PFI1','ScanClock');
-     addTriggerConnection(state.photometry2.session2, 'External', 'Dev2/PFI0', 'StartTrigger');
+% % %      addTriggerConnection(state.photometry2.session2, 'External', 'Dev2/PFI0', 'StartTrigger');
    
 %      
 
@@ -103,11 +110,12 @@ function initPhotometry
         global k
         k=0;
         global olf_port
-        olf_port=serial('com4','baudrate', 9600, 'parity', 'none', 'databits', 8);
+        olf_port=serial('COM4','baudrate', 9600, 'parity', 'none', 'databits', 8);
         fopen (olf_port);
         numOdor=state.olf.numOdor;
-        odorCasette=[1:numOdor]'
+        odorCasette=[3:numOdor]'
         state.olf.odorSeq=[];
+        state.olf.counter=0;
         %determines how many trial presentations
         reps=state.olf.presentations-1;
         odorSeq=odorCasette(randperm(length(odorCasette)));
@@ -115,11 +123,46 @@ function initPhotometry
             odorSeq=[odorSeq;odorCasette(randperm(length(odorCasette)))];
         end
         state.olf.odorSeq=odorSeq;
-        disp('Initialized');
-%         state.photometry2.session2.addlistener('DataRequired', @queueLEDData);
+        
+        
+       % Roman TTL_timer
+%        global TTL_timer
+%        TTL_timer=timer;
+%        TTL_timer.TimerFcn = @(~,~)outputSingleScan(state.DIO.session,[1]);
+%        TTL_timer.StopFcn = @(~,~)outputSingleScan(state.DIO.session,[0]);
+%        TTL_timer.StartDelay=3;
+      
+     
+    global speakerSession
+    global stims
+    speakerSession = daq.createSession('ni');
+    speakerSession.Rate = 195312 ; %Change speaker sample rate to 192000 for toneseq, 195312 for all other stims
+    addAnalogOutputChannel(speakerSession,'Dev1','ao0','Voltage'); 
+    state.US.stimSeq=[];
+    USstimCasette=[2]' %Set tones/calls to play (out of 16). Calls are 1-8, Tones are 9-15
+    state.US.stimPresentations=20; %number of trials 
+    USstimreps=state.US.stimPresentations-1;
+    state.US.counter=0;
+     stimSeq=USstimCasette(randperm(length(USstimCasette)));
+        for c=1:USstimreps
+            stimSeq=[stimSeq;USstimCasette(randperm(length(USstimCasette)))];
+        end
+      state.US.stimSeq=stimSeq;
+%%%%%
+      stims=load('AlbertoAudStim.mat');
+%%%%%
+%       stims=load('DDstimsCellArray.mat');
+       disp('Initialized');
+        state.photometry2.session2.addlistener('DataRequired', @queueLEDData);
 
-    % now session is re-created each trial 5/30/17, lines below no longer
-    % needed
+%    trigger miniscope aquisition
+global miniscope
+miniscope=daq.createSession('ni');
+addDigitalChannel(miniscope,'Dev1','port1/line0','OutputOnly');
+
+
+% now session is re-created each trial 5/30/17, lines below no longer
+%     needed
 %     %% Set up session and channels
 %     state.photometry.session = daq.createSession('ni');
 %     
@@ -153,5 +196,5 @@ function initPhotometry
 %     % data available notify must be set after queueing data
 %     state.photometry.session.NotifyWhenDataAvailableExceeds = state.photometry.duration * state.photometry.sample_rate; % at end of complete acquisition     
 %     lh{1} = state.photometry.session.addlistener('DataAvailable',@processstate.photometryData);
-% 
-%   
+
+  

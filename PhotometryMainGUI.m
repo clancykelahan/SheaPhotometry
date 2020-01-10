@@ -22,7 +22,7 @@ function varargout = PhotometryMainGUI(varargin)
 
 % Edit the above text to modify the response to help PhotometryMainGUI
 
-% Last Modified by GUIDE v2.5 07-Aug-2018 15:10:47
+% Last Modified by GUIDE v2.5 02-Oct-2019 12:33:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -357,9 +357,31 @@ function togglebutton1_Callback(hObject, eventdata, handles)
 val=get(hObject,'Value');
 
 if val==1
-    pre_vid = videoinput('winvideo', 1);
+    pre_vid = videoinput('winvideo', 1,'MJPG_640x480');
     preview(pre_vid);
 else
     closepreview;
     clear pre_vid;
 end
+
+
+% --- Executes on button press in checkbox3.
+function checkbox3_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox3
+global mic_mark
+mic_mark=get(hObject,'Value');
+
+
+% --- Executes on button press in checkbox4.
+function checkbox4_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox4
+global nest_cam_mark
+nest_cam_mark=get(hObject,'Value');
